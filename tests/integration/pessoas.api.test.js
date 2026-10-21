@@ -80,9 +80,7 @@ describe('API /pessoas (integração)', () => {
 
     it('PUT /pessoas/:cpf retorna 400 ao tentar alterar o CPF', async () => {
       await request(app).post('/pessoas').send(maria);
-      const res = await request(app)
-        .put('/pessoas/52998224725')
-        .send({ cpf: '111.444.777-35' });
+      const res = await request(app).put('/pessoas/52998224725').send({ cpf: '111.444.777-35' });
       expect(res.status).toBe(400);
     });
 
@@ -91,7 +89,11 @@ describe('API /pessoas (integração)', () => {
     });
 
     it('retorna 500 genérico para erros inesperados', async () => {
-      const service = { listar: () => { throw new Error('falha no banco'); } };
+      const service = {
+        listar: () => {
+          throw new Error('falha no banco');
+        },
+      };
       const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
       const res = await request(createApp({ service })).get('/pessoas');
       expect(res.status).toBe(500);
